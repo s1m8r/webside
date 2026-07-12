@@ -1,12 +1,15 @@
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import api from "./axios";
 import z from "zod";
-import { CartCreateSchema } from "@/schemas/cart";
+import { CartCreateSchema, CartScema } from "@/schemas/cart";
 
 const queryKey = ["product"];
-type productFormData = z.infer<typeof CartCreateSchema>;
+
+type productCreateData = z.infer<typeof CartCreateSchema>;
+type productResponseData = z.infer<typeof CartScema>;
+
 type productAll = {
-  data: productFormData[];
+  data: productResponseData[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -32,7 +35,7 @@ export const useGetCart = (search = "") => {
 
 export const useCart = () => {
   return useMutation({
-    mutationFn: async (data: productFormData) => {
+    mutationFn: async (data: productCreateData) => {
       const res = await api.post("/api/collection/cart", data);
       return res.data.data;
     },
