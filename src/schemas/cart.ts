@@ -7,6 +7,12 @@ export const CartItemSchema = z.object({
   price: z.number().min(1, "Price must be greater than 0"),
   image: z.string(),
 });
+
+export const CartCreateSchema = z.object({
+  data: z.array(CartItemSchema),
+  email: z.email(),
+});
+
 export const CartScema = z.object({
   data: z.array(CartItemSchema),
   email: z.email(),

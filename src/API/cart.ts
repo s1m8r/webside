@@ -1,10 +1,10 @@
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import api from "./axios";
 import z from "zod";
-import { CartScema } from "@/schemas/cart";
+import { CartCreateSchema } from "@/schemas/cart";
 
 const queryKey = ["product"];
-type productFormData = z.infer<typeof CartScema>;
+type productFormData = z.infer<typeof CartCreateSchema>;
 type productAll = {
   data: productFormData[];
   pagination: {
