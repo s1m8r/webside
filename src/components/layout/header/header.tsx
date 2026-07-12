@@ -23,8 +23,14 @@ import { useState } from "react";
 import { useCart } from "@/API/cart";
 
 const Header = () => {
-  const { items, increaseQuantity, decreaseQuantity, removeItem, totalPrice } =
-    useCartStore();
+  const {
+    items,
+    increaseQuantity,
+    decreaseQuantity,
+    removeItem,
+    totalPrice,
+    clearCart,
+  } = useCartStore();
   const sIcon =
     "bg-white p-1 rounded-md transition-all duration-300 hover:scale-105 hover:rotate-1 cursor-pointer";
   const size = 30;
@@ -46,10 +52,18 @@ const Header = () => {
     }));
     const user = useAuthStore.getState().user;
     if (user)
-      mutate({
-        data: array,
-        email: user.email,
-      });
+      mutate(
+        {
+          data: array,
+          email: user.email,
+        },
+        {
+          onSuccess: () => {
+            clearCart();
+            setIsOpen(false);
+          },
+        },
+      );
   };
   return (
     <div className="fixed top-0 left-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-gray-200/50 mb-18">

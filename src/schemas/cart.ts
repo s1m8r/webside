@@ -11,5 +11,5 @@ export const CartScema = z.object({
   data: z.array(CartItemSchema),
   email: z.email(),
   id: z.number().optional(),
-  createdAt: z.string().optional(),
+  createdAt: z.string(),
 });
