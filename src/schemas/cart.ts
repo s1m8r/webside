@@ -5,10 +5,11 @@ export const CartItemSchema = z.object({
   quantity: z.number(),
   name: z.string().min(1, "Product name is required"),
   price: z.number().min(1, "Price must be greater than 0"),
-  createdAt: z.string().optional(),
+  image: z.string(),
 });
 export const CartScema = z.object({
   data: z.array(CartItemSchema),
   email: z.email(),
   id: z.number().optional(),
+  createdAt: z.string().optional(),
 });
