@@ -11,7 +11,7 @@ const MyOrders = () => {
         <p className="text-center text-gray-400 py-10 text-sm">No orders yet</p>
       )}
 
-      {data?.data.map((order) => {
+      {data?.data.map((order, index) => {
         const total = order.data.reduce(
           (sum, item) => sum + item.price * item.quantity,
           0,
@@ -20,7 +20,9 @@ const MyOrders = () => {
         return (
           <div key={order.id} className="mb-6 last:mb-0">
             <div className="flex items-baseline justify-between pb-2 border-b border-gray-300">
-              <span className="text-sm font-medium">Order #{order.id}</span>
+              <span className="text-sm font-medium">
+                Order {data?.pagination.totalItems - index}
+              </span>
               <span className="text-xs text-gray-400">
                 {new Date(order.createdAt).toLocaleDateString("en-US")}
               </span>

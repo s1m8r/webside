@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import Items from "./itemHeader";
-import { ShoppingCart } from "lucide-react";
-import ButtonChlidren from "../button";
+import { LogOutIcon, ShoppingCart, UserIcon } from "lucide-react";
 import { useAuthStore } from "@/stores/userStore";
 import {
   Tooltip,
@@ -16,6 +15,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
@@ -40,6 +46,7 @@ const Header = () => {
     navigator({ to: "/login" });
   };
   const user = useAuthStore.getState().user;
+  const logout = useAuthStore.getState().logout;
   const [isOpen, setIsOpen] = useState(false);
   const { mutate } = useCart();
   const goCart = () => {
@@ -50,7 +57,6 @@ const Header = () => {
       price: item.price,
       quantity: item.quantity,
     }));
-    const user = useAuthStore.getState().user;
     if (user)
       mutate(
         {
@@ -85,11 +91,16 @@ const Header = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <DialogTrigger asChild>
-                  <button className={mr}>
+                  <button className={`relative ${mr}`}>
                     <ShoppingCart
                       size={size}
                       className={`${sIcon} ${items.length > 0 ? "text-orange-500" : ""}`}
                     />
+                    <span
+                      className={`absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center text-xs font-bold`}
+                    >
+                      {items.length}
+                    </span>
                   </button>
                 </DialogTrigger>
               </TooltipTrigger>
@@ -100,14 +111,14 @@ const Header = () => {
             </Tooltip>
 
             <DialogContent className="max-w-lg">
-              <DialogHeader>
+              <DialogHeader className=" sticky top-0 z-10">
                 <DialogTitle>My Cart</DialogTitle>
                 <DialogDescription>
                   Products you have added to your cart.
                 </DialogDescription>
               </DialogHeader>
               {items.length !== 0 && (
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-[calc(80vh-80px)] overflow-y-auto">
                   {items.map((item) => (
                     <div
                       key={item.productId}
@@ -152,12 +163,15 @@ const Header = () => {
                       </div>
                     </div>
                   ))}
-
-                  <div className="flex justify-between border-t pt-3 font-semibold text-lg">
-                    <span>Total</span>
-                    <span>${totalPrice()}</span>
+                  <div className="sticky bottom-0 z-10 bg-white">
+                    <div className="flex justify-between border-t pt-3 font-semibold text-lg">
+                      <span>Total</span>
+                      <span>${totalPrice()}</span>
+                    </div>
+                    <div className="flex justify-end">
+                      <Button onClick={goCart}>Buy</Button>
+                    </div>
                   </div>
-                  <Button onClick={goCart}>Buy</Button>
                 </div>
               )}
               {items.length === 0 && (
@@ -171,16 +185,37 @@ const Header = () => {
             </DialogContent>
           </Dialog>
 
-          {!user && (
-            <ButtonChlidren type="normal" onClick={goToLogin}>
-              Login
-            </ButtonChlidren>
-          )}
+          {!user && <Button onClick={goToLogin}>Login</Button>}
           {user && (
-            <button className="cursor-pointer flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-sm font-semibold transition-all duration-300 hover:scale-105 hover:rotate-2 hover:bg-orange-600 hover:shadow-md">
-              {user.firstName.charAt(0).toUpperCase()}
-              {user.lastName.charAt(0).toUpperCase()}
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="cursor-pointer flex h-8 w-8 items-center justify-center rounded-full text-sm"
+                  variant="default"
+                >
+                  {user.firstName.charAt(0).toUpperCase()}
+                  {user.lastName.charAt(0).toUpperCase()}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={()=>navigator({to:"/profile"})}>
+                  <UserIcon />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => {
+                    clearCart();
+                    logout();
+                    navigator({ to: "/" });
+                  }}
+                >
+                  <LogOutIcon />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </header>

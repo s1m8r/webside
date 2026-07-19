@@ -1,9 +1,11 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import OnlyCard from "./onlyCard";
 import TextContent from "./textContent";
 import { useGetProducts } from "@/API/product";
 import TitleContent from "./title";
-import { Star } from "lucide-react";
+import { PlusCircle, Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
 interface Props {
   type: "products" | "stores";
   id: number;
@@ -27,6 +29,7 @@ interface Props {
   friday: string;
   saturday: string;
 }
+
 export default function ContentStore({
   id,
   type,
@@ -50,10 +53,33 @@ export default function ContentStore({
   friday,
   saturday,
 }: Props) {
-  const { data } = useGetProducts(1, name);
-  const products = data?.data.filter((item) => Number(item.id) !== Number(id));
+  const [page, setPage] = useState(1);
+  const { data } = useGetProducts(page, name);
+
+  const products = useMemo(
+    () =>
+      data?.data.filter(
+        (item) => !(type === "products" && Number(item.id) === Number(id)),
+      ),
+    [data, id, type],
+  );
+
+  const [dataProduct, setDataProduct] = useState<typeof products>([]);
+
+  useEffect(() => {
+    if (!products) return;
+
+    setDataProduct((prev) => {
+      const base = page === 1 ? [] : (prev ?? []);
+      const merged = [...base, ...products];
+
+      return Array.from(new Map(merged.map((p) => [p.id, p])).values());
+    });
+  }, [products, page]);
+
   const navigator = useNavigate();
   const padding = "p-1";
+
   return (
     <>
       <div>
@@ -64,9 +90,14 @@ export default function ContentStore({
             <TextContent header="Name">{name}</TextContent>
             <TextContent header="Email">{email}</TextContent>
             <TextContent header="Store">
-              <Link to={website} className="text-blue-700">
+              <a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700"
+              >
                 {name} website
-              </Link>
+              </a>
             </TextContent>
             <TextContent header="Phone">{phone}</TextContent>
             <TextContent header="Categories">
@@ -88,36 +119,40 @@ export default function ContentStore({
             </TextContent>
             <table className="w-fit border-collapse border border-gray-300 text-center">
               <thead>
-                <th className={`${padding}`}>Sunday</th>
-                <th className={`${padding}`}>Monday</th>
-                <th className={`${padding}`}>Tuesday</th>
-                <th className={`${padding}`}>Wednesday</th>
-                <th className={`${padding}`}>Thursday</th>
-                <th className={`${padding}`}>Friday</th>
-                <th className={`${padding}`}>Saturday</th>
+                <tr>
+                  <th className={`${padding}`}>Sunday</th>
+                  <th className={`${padding}`}>Monday</th>
+                  <th className={`${padding}`}>Tuesday</th>
+                  <th className={`${padding}`}>Wednesday</th>
+                  <th className={`${padding}`}>Thursday</th>
+                  <th className={`${padding}`}>Friday</th>
+                  <th className={`${padding}`}>Saturday</th>
+                </tr>
               </thead>
               <tbody>
-                <td className={`${padding}`}>{sunday}</td>
-                <td className={`${padding}`}>{monday}</td>
-                <td className={`${padding}`}>{tuesday}</td>
-                <td className={`${padding}`}>{wednesday}</td>
-                <td className={`${padding}`}>{thursday}</td>
-                <td className={`${padding}`}>{friday}</td>
-                <td className={`${padding}`}>{saturday}</td>
+                <tr>
+                  <td className={`${padding}`}>{sunday}</td>
+                  <td className={`${padding}`}>{monday}</td>
+                  <td className={`${padding}`}>{tuesday}</td>
+                  <td className={`${padding}`}>{wednesday}</td>
+                  <td className={`${padding}`}>{thursday}</td>
+                  <td className={`${padding}`}>{friday}</td>
+                  <td className={`${padding}`}>{saturday}</td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
         <TitleContent title="Products" isRegister={true} />
-        {!products?.length && (
+        {!dataProduct?.length && (
           <div className="flex h-20 items-center justify-center">
             No other items
           </div>
         )}
-        {products && (
+        {!!dataProduct?.length && (
           <>
-            <div className="flex">
-              {products.map((item) => (
+            <div className="flex mb-4">
+              {dataProduct.map((item) => (
                 <OnlyCard
                   key={item.id}
                   type="products"
@@ -131,6 +166,14 @@ export default function ContentStore({
                 />
               ))}
             </div>
+            {data?.pagination.hasNextPage && (
+              <p
+                onClick={() => setPage((p) => p + 1)}
+                className="flex justify-center cursor-pointer mb-10"
+              >
+                <PlusCircle />
+              </p>
+            )}
           </>
         )}
       </div>

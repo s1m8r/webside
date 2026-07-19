@@ -2,20 +2,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
-body {
-  background-color: #fdf7e7;
-}
-@keyframes moveLeftRight {
-  0% {
-    background-position: 0 0;
-  }
-  50% {
-    background-position: -300px 0;
-  }
-  100% {
-    background-position: 0 0;
-  }
-}
 
 .animate-bg {
   animation: moveLeftRight 8s ease-in-out infinite;
@@ -72,7 +58,7 @@ body {
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: oklch(0.72 0.19 50);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);

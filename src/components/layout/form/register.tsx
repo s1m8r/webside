@@ -7,11 +7,11 @@ import type {
 
 import { registerSchema } from "@/schemas/user";
 // import { Spinner } from "@/components/ui/spinner";
-import ButtonChlidren from "@/components/layout/button";
 import InputForm from "./inputForm";
 import { Calendar, Lock, Mail, UserRound } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import TitleContent from "../title";
+import { Button } from "@/components/ui/button";
 // import TitleContent from "@/components/layout/titleContent";
 
 type registerFormData = z.infer<typeof registerSchema>;
@@ -109,13 +109,9 @@ export default function RegisterForm({
             />
           </div>
 
-          <ButtonChlidren
-            type="button"
-            disabled={isPending}
-            isPending={isPending}
-          >
+          <Button className="w-full" disabled={isPending}>
             Register
-          </ButtonChlidren>
+          </Button>
         </form>
 
         <Link

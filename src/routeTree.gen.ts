@@ -14,6 +14,7 @@ import { Route as protecedIndexRouteImport } from './routes/(proteced)/index'
 import { Route as loginRegisterRouteImport } from './routes/(login)/register'
 import { Route as loginLoginRouteImport } from './routes/(login)/login'
 import { Route as protecedStoresIndexRouteImport } from './routes/(proteced)/stores/index'
+import { Route as protecedProfileIndexRouteImport } from './routes/(proteced)/profile/index'
 import { Route as protecedOrdersIndexRouteImport } from './routes/(proteced)/orders/index'
 import { Route as protecedAboutIndexRouteImport } from './routes/(proteced)/about/index'
 import { Route as protecedStoresIdRouteImport } from './routes/(proteced)/stores/$id'
@@ -41,6 +42,11 @@ const loginLoginRoute = loginLoginRouteImport.update({
 const protecedStoresIndexRoute = protecedStoresIndexRouteImport.update({
   id: '/stores/',
   path: '/stores/',
+  getParentRoute: () => protecedRouteRoute,
+} as any)
+const protecedProfileIndexRoute = protecedProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => protecedRouteRoute,
 } as any)
 const protecedOrdersIndexRoute = protecedOrdersIndexRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/stores/$id': typeof protecedStoresIdRoute
   '/about/': typeof protecedAboutIndexRoute
   '/orders/': typeof protecedOrdersIndexRoute
+  '/profile/': typeof protecedProfileIndexRoute
   '/stores/': typeof protecedStoresIndexRoute
   '/stores/product/$id': typeof protecedStoresProductIdRoute
 }
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/stores/$id': typeof protecedStoresIdRoute
   '/about': typeof protecedAboutIndexRoute
   '/orders': typeof protecedOrdersIndexRoute
+  '/profile': typeof protecedProfileIndexRoute
   '/stores': typeof protecedStoresIndexRoute
   '/stores/product/$id': typeof protecedStoresProductIdRoute
 }
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/(proteced)/stores/$id': typeof protecedStoresIdRoute
   '/(proteced)/about/': typeof protecedAboutIndexRoute
   '/(proteced)/orders/': typeof protecedOrdersIndexRoute
+  '/(proteced)/profile/': typeof protecedProfileIndexRoute
   '/(proteced)/stores/': typeof protecedStoresIndexRoute
   '/(proteced)/stores/product/$id': typeof protecedStoresProductIdRoute
 }
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/stores/$id'
     | '/about/'
     | '/orders/'
+    | '/profile/'
     | '/stores/'
     | '/stores/product/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/stores/$id'
     | '/about'
     | '/orders'
+    | '/profile'
     | '/stores'
     | '/stores/product/$id'
   id:
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/(proteced)/stores/$id'
     | '/(proteced)/about/'
     | '/(proteced)/orders/'
+    | '/(proteced)/profile/'
     | '/(proteced)/stores/'
     | '/(proteced)/stores/product/$id'
   fileRoutesById: FileRoutesById
@@ -173,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof protecedStoresIndexRouteImport
       parentRoute: typeof protecedRouteRoute
     }
+    '/(proteced)/profile/': {
+      id: '/(proteced)/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof protecedProfileIndexRouteImport
+      parentRoute: typeof protecedRouteRoute
+    }
     '/(proteced)/orders/': {
       id: '/(proteced)/orders/'
       path: '/orders'
@@ -209,6 +228,7 @@ interface protecedRouteRouteChildren {
   protecedStoresIdRoute: typeof protecedStoresIdRoute
   protecedAboutIndexRoute: typeof protecedAboutIndexRoute
   protecedOrdersIndexRoute: typeof protecedOrdersIndexRoute
+  protecedProfileIndexRoute: typeof protecedProfileIndexRoute
   protecedStoresIndexRoute: typeof protecedStoresIndexRoute
   protecedStoresProductIdRoute: typeof protecedStoresProductIdRoute
 }
@@ -218,6 +238,7 @@ const protecedRouteRouteChildren: protecedRouteRouteChildren = {
   protecedStoresIdRoute: protecedStoresIdRoute,
   protecedAboutIndexRoute: protecedAboutIndexRoute,
   protecedOrdersIndexRoute: protecedOrdersIndexRoute,
+  protecedProfileIndexRoute: protecedProfileIndexRoute,
   protecedStoresIndexRoute: protecedStoresIndexRoute,
   protecedStoresProductIdRoute: protecedStoresProductIdRoute,
 }

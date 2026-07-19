@@ -9,22 +9,14 @@ const Stores = () => {
 
   const { data: dataStores, isLoading } = useGetStores(page);
 
-  const [dataStore] = useState(dataStores);
-
-  const stores = dataStore?.data?.map((store) => ({
-    name: store.name,
-    id: store.id,
-  }));
-
   const navigator = useNavigate();
   const plusPage = () => {
     setPage((prev) => prev + 1);
   };
-
   return (
     <>
       <Design>
-        {stores?.map((name) => (
+        {dataStores?.data.map((name) => (
           <Card
             key={name.name}
             title={name.name}
@@ -42,7 +34,7 @@ const Stores = () => {
           />
         ))}
         {dataStores?.pagination.hasNextPage && (
-          <button onClick={plusPage}>shoMore</button>
+          <button onClick={plusPage}>show More</button>
         )}
       </Design>
     </>

@@ -27,3 +27,18 @@ export const useRegister = () => {
     },
   });
 };
+
+export const changePassword = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
+});
+type changePasswordType = z.infer<typeof changePassword>;
+
+export const useRestPassword = () => {
+  return useMutation({
+    mutationFn: async (data: changePasswordType) => {
+      const res = await api.post("/api/reset-password", data);
+      return res.data;
+    },
+  });
+};

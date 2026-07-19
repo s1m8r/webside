@@ -11,6 +11,8 @@ const Product = () => {
       <div>
         {data && (
           <Content
+            images={data.images}
+            storeId={data.storeId}
             id={data.id}
             type="products"
             name={data.name}
