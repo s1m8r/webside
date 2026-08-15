@@ -140,7 +140,10 @@ const Header = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <DialogTrigger asChild>
-                    <button className={`relative`}>
+                    <button
+                      className={`relative`}
+                      onClick={() => navigator({ to: "/mycart/" })}
+                    >
                       <ShoppingCart
                         className={`${sIcon} ${items.length > 0 ? "text-orange-500" : ""}`}
                       />
