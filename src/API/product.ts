@@ -5,25 +5,31 @@ import z from "zod";
 
 const queryKey = ["product"];
 type productFormData = z.infer<typeof ProdectScema>;
-type productAll = {
+export interface paginations {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+export type productAll = {
   data: productFormData[];
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-  };
+  pagination: paginations;
 };
 
-export const useGetProducts = (page = 1, search = "") => {
+export const useGetProducts = (
+  limit = 10,
+  sortBy = "",
+  page = 1,
+  search = "",
+) => {
   return useQuery<productAll>({
-    queryKey: [...queryKey, page, search],
+    queryKey: [...queryKey, limit, sortBy, page, search],
 
     queryFn: async () => {
       const res = await api.get(
-        `api/collection/product?page=${page}&search=${search}`,
+        `api/collection/product?limit=${limit}&sortBy=${sortBy}&page=${page}&search=${search}`,
       );
 
       return res.data;

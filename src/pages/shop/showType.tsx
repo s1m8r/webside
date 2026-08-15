@@ -1,16 +1,15 @@
-import { Route } from "@/routes/(proteced)/stores/$id";
+import { Route } from "@/routes/(proteced)/stores/type/$id";
 import { useState } from "react";
-import { useGetStore } from "@/API/stores";
 import { useGetProducts } from "@/API/product";
 import StoreUi from "@/components/layout/stores";
 import Paginations from "@/components/layout/pagination";
-const ShopShow = () => {
+import { useGetType } from "@/API/types";
+const ShowType = () => {
   const { id } = Route.useParams();
-  const { data } = useGetStore(id);
-  const title = data?.name;
+  const { data: types } = useGetType(id);
+  const title = types?.name;
   const [page, setPage] = useState(1);
-
-  const { data: products } = useGetProducts(8, "", page, title);
+  const { data: products } = useGetProducts(8, "", page, types?.value);
   const [color, setColor] = useState("");
   console.log(color);
   return (
@@ -32,4 +31,4 @@ const ShopShow = () => {
   );
 };
 
-export default ShopShow;
+export default ShowType;

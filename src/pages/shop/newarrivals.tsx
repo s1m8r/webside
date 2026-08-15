@@ -1,22 +1,16 @@
-import { Route } from "@/routes/(proteced)/stores/$id";
 import { useState } from "react";
-import { useGetStore } from "@/API/stores";
 import { useGetProducts } from "@/API/product";
 import StoreUi from "@/components/layout/stores";
 import Paginations from "@/components/layout/pagination";
-const ShopShow = () => {
-  const { id } = Route.useParams();
-  const { data } = useGetStore(id);
-  const title = data?.name;
+const NewArrivals = () => {
   const [page, setPage] = useState(1);
-
-  const { data: products } = useGetProducts(8, "", page, title);
+  const { data: products } = useGetProducts(8);
   const [color, setColor] = useState("");
   console.log(color);
   return (
     <>
       <StoreUi
-        title={title ?? ""}
+        title={"New Arrivals"}
         products={products?.data ?? []}
         setColor={setColor}
       />
@@ -32,4 +26,4 @@ const ShopShow = () => {
   );
 };
 
-export default ShopShow;
+export default NewArrivals;

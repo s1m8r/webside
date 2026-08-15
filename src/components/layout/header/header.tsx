@@ -1,6 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import Items from "./itemHeader";
-import { LogOutIcon, ShoppingCart, UserIcon } from "lucide-react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+
+import { LogOutIcon, Search, ShoppingCart, UserIcon } from "lucide-react";
 import { useAuthStore } from "@/stores/userStore";
 import {
   Tooltip,
@@ -27,6 +35,12 @@ import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useCart } from "@/API/cart";
+import { useGetStores } from "@/API/stores";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 const Header = () => {
   const {
@@ -39,8 +53,6 @@ const Header = () => {
   } = useCartStore();
   const sIcon =
     "bg-white p-1 rounded-md transition-all duration-300 hover:scale-105 hover:rotate-1 cursor-pointer";
-  const size = 30;
-  const mr = "ml-2 mr-2";
   const navigator = useNavigate();
   const goToLogin = () => {
     navigator({ to: "/login" });
@@ -71,45 +83,80 @@ const Header = () => {
         },
       );
   };
+  const { data: Shop } = useGetStores();
   return (
-    <div className="fixed top-0 left-0 z-50 w-full bg-white/60 backdrop-blur-md border-b border-gray-200/50 mb-18">
-      <header className="h-18 flex items-center justify-between p-2">
-        <Link to="/">
-          <div className="logo flex items-center cursor-pointer">
-            <img src="/logo.png" alt="Logo" className="w-20" />
-            <span className=" font-bold ">Samer Shop</span>
-          </div>
+    <div className="px-12 fixed top-0 left-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+      <div className="mx-auto flex h-16 items-center gap-6 px-6">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="h-12 w-12 object-contain"
+          />
+          <span className="text-xl font-bold">Samer Shop</span>
         </Link>
-        <div className="items">
-          <Items link="/">home</Items>
-          <Items link="/stores">stores</Items>
-          <Items link="/about">about</Items>
-          <Items link="/orders">Orders</Items>
+        <NavigationMenu className="shrink-0 ">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Shops</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                {Shop?.data.map((item) => (
+                  <NavigationMenuLink key={item.id} asChild>
+                    <Link to={`/stores/${item.id}`}>{item.name}</Link>
+                  </NavigationMenuLink>
+                ))}
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/stores/TopSell">On Sale</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/stores/newarrivals">New Arrivals</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="#Brands">Brands</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+        <div className="flex-1 px-6">
+          <InputGroup className="w-full bg-gray-200/50">
+            <InputGroupInput placeholder="Search products..." />
+            <InputGroupAddon>
+              <Search />
+            </InputGroupAddon>
+            <InputGroupAddon align="inline-end">12 results</InputGroupAddon>
+          </InputGroup>
         </div>
-        <div className="flex">
+
+        <div className="flex items-center gap-4 shrink-0">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <button className={`relative ${mr}`}>
-                    <ShoppingCart
-                      size={size}
-                      className={`${sIcon} ${items.length > 0 ? "text-orange-500" : ""}`}
-                    />
-                    <span
-                      className={`absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center text-xs font-bold`}
-                    >
-                      {items.length}
-                    </span>
-                  </button>
-                </DialogTrigger>
-              </TooltipTrigger>
-
-              <TooltipContent>
-                <p>My Cart</p>
-              </TooltipContent>
-            </Tooltip>
-
+            <div className="flex gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <button className={`relative`}>
+                      <ShoppingCart
+                        className={`${sIcon} ${items.length > 0 ? "text-orange-500" : ""}`}
+                      />
+                      <span
+                        className={`absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center text-xs font-bold`}
+                      >
+                        {items.length}
+                      </span>
+                    </button>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>My Cart</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <DialogContent className="max-w-lg">
               <DialogHeader className=" sticky top-0 z-10">
                 <DialogTitle>My Cart</DialogTitle>
@@ -144,16 +191,13 @@ const Header = () => {
                         >
                           <Minus size={16} className="mx-auto" />
                         </button>
-
                         <span className="w-6 text-center">{item.quantity}</span>
-
                         <button
                           onClick={() => increaseQuantity(item.productId)}
                           className="w-8 h-8 rounded border hover:bg-gray-100"
                         >
                           <Plus size={16} className="mx-auto" />
                         </button>
-
                         <button
                           onClick={() => removeItem(item.productId)}
                           className="text-red-500 hover:text-red-700 ml-2"
@@ -184,7 +228,6 @@ const Header = () => {
               )}
             </DialogContent>
           </Dialog>
-
           {!user && <Button onClick={goToLogin}>Login</Button>}
           {user && (
             <DropdownMenu>
@@ -198,7 +241,7 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={()=>navigator({to:"/profile"})}>
+                <DropdownMenuItem onClick={() => navigator({ to: "/profile" })}>
                   <UserIcon />
                   Profile
                 </DropdownMenuItem>
@@ -218,7 +261,7 @@ const Header = () => {
             </DropdownMenu>
           )}
         </div>
-      </header>
+      </div>
     </div>
   );
 };

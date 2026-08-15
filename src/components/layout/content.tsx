@@ -1,17 +1,29 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import OnlyCard from "./onlyCard";
-import TextContent from "./textContent";
-import { useGetProducts } from "@/API/product";
 import TitleContent from "./title";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+
 import { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Zoom, Thumbs } from "swiper/modules";
+import { Swiper as SwiperType } from "swiper";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css";
+import Rating from "./rading";
+import { Check, Minus, Plus } from "lucide-react";
+import { Button } from "../ui/button";
+import { useCartStore } from "@/stores/cartStore";
+import WriteReview from "./writeReview";
+import ReadView from "./readView";
+import ProductsHome from "@/pages/home/productsHome";
+import { useGetProducts } from "@/API/product";
+import Faqs from "@/pages/storesPages/faq";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetColors } from "@/API/colors";
+
+interface images {
+  color: string;
+  path: string;
+}
+
 interface Props {
   type: "products" | "stores";
   id: number;
@@ -19,131 +31,224 @@ interface Props {
   image: string;
   price: number;
   storeName: string;
-  images: string[];
+  images: images[];
   description?: string;
   typeOfProduct?: string;
   storeId?: number;
+  rating: number;
+  discountPercentage: number;
 }
 export default function Content({
   id,
-  type,
   name,
   image,
   price,
   storeName,
   description,
   typeOfProduct,
-  storeId,
   images,
+  rating,
+  discountPercentage,
 }: Props) {
-  const { data } = useGetProducts(1, storeName);
-  const products = data?.data.filter((item) => Number(item.id) !== Number(id));
-  const navigator = useNavigate();
-  const [open, setOpen] = useState(false);
+  const addToCart = useCartStore((state) => state.addToCart);
+  const {
+    items: cartItems,
+    decreaseQuantity,
+    increaseQuantity,
+  } = useCartStore();
+  const { data: Nameofcolor } = useGetColors();
+  const { data } = useGetProducts(4, typeOfProduct);
+  const cartItem = cartItems.find((item) => item.productId === id);
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [activeThumb, setActiveThumb] = useState(0);
+  const priceAfter = price - (price * discountPercentage) / 100;
+  const colors = images.filter((item) => item.color !== "xcolor");
+  const [selectedColor, setSelectedColor] = useState(
+    colors.map((item) => item.color)[0],
+  );
+  const colorName = Nameofcolor?.data.find(
+    (i) => i.color === selectedColor,
+  )?.path;
   return (
-    <>
-      <div>
+    <div className="px-12">
+      <div className="">
         <TitleContent title={name} />
-        <div className=" flex mb-24">
-          <OnlyCard
-            type={type}
-            id={id}
-            name={name}
-            image={image}
-            price={price}
-          />
-          <div className="ml-6 mt-6">
-            <TextContent header="Name">{name}</TextContent>
-            <TextContent header="Description">{description}</TextContent>
-            <TextContent header="Store">
-              <Link to={`/stores/${storeId}`} className="text-blue-700">
-                {storeName}
-              </Link>
-            </TextContent>
-            <TextContent header="Price">{price}$</TextContent>
-            <TextContent header="Type">{typeOfProduct}</TextContent>
-            <TextContent header="Imges">
-              <div
-                className="grid grid-cols-2 gap-2 border-4 rounded-2xl p-2 cursor-pointer"
-                onClick={() => setOpen(true)}
+        <div className="flex gap-4 mb-4">
+          <div>
+            <Swiper
+              modules={[Thumbs]}
+              onSwiper={setThumbsSwiper}
+              slidesPerView={4}
+              spaceBetween={10}
+              watchSlidesProgress
+              direction="vertical"
+            >
+              <SwiperSlide
+                onClick={() => setActiveThumb(0)}
+                className={`
+      !flex !h-24 !w-24 !items-center !justify-center
+      
+      cursor-pointer
+      ${activeThumb === 0 ? "border-amber-700 border-2" : ""}
+    `}
               >
-                {images.slice(0, 3).map((item, index) => (
-                  <img
-                    key={index}
-                    src={item}
-                    className="w-full h-32 object-cover rounded-md"
-                  />
-                ))}
-                {images.length === 4 && (
-                  <img
-                    className="w-full h-32 object-cover rounded-md"
-                    src={images[3]}
-                  />
-                )}
-                {images.length > 4 && (
-                  <div className="relative">
-                    <img
-                      className="w-full h-32 object-cover rounded-md"
-                      src={images[3]}
-                    />
+                <img
+                  src={image}
+                  alt=""
+                  className={`h-full w-full object-cover ${activeThumb === 0 ? "" : "rounded-[8px]"}`}
+                />
+              </SwiperSlide>
 
-                    <div className="absolute inset-0 bg-black/40 rounded-md flex items-center justify-center">
-                      <span className="text-white text-2xl font-bold">
-                        +{images.length - 4}
-                      </span>
-                    </div>
+              {images.map((item, i) => (
+                <SwiperSlide
+                  key={item.path}
+                  onClick={() => setActiveThumb(i + 1)}
+                  className={`
+        !flex !h-24 !w-24 !items-center !justify-center
+        
+        cursor-pointer
+        ${activeThumb === i + 1 ? "border-amber-700 border-2" : ""}
+      `}
+                >
+                  <img
+                    src={item.path}
+                    alt=""
+                    className={`h-full w-full object-cover ${activeThumb === i + 1 ? "" : "rounded-[8px]"}`}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+          <Swiper
+            modules={[Thumbs, Navigation, Pagination, Zoom]}
+            thumbs={{ swiper: thumbsSwiper }}
+            navigation
+            pagination={{ clickable: true }}
+            zoom
+            className="!m-0 w-80 flex rounded-[8px]"
+            onSlideChange={(swiper) => setActiveThumb(swiper.activeIndex)}
+          >
+            <SwiperSlide className="m-0 !flex !items-center">
+              <div className="swiper-zoom-container m-0">
+                <img src={image} className="h-full w-full object-contain" />
+              </div>
+            </SwiperSlide>
+
+            {images.map((item) => (
+              <SwiperSlide key={item.path} className="m-0 !flex !items-center">
+                <div className="swiper-zoom-container">
+                  <img
+                    src={item.path}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <div className=" space-y-4">
+            <div className="border-b-2 space-y-4">
+              <h1 className=" font-bold text-2xl">{name}</h1>
+              <Rating rating={rating} type="product" />
+              <div className="space-x-2 text-xl flex">
+                <span>{priceAfter.toFixed(2)}</span>
+                {discountPercentage > 0 && (
+                  <div className="">
+                    <span className=" text-gray-400 line-through">
+                      ${price.toFixed(2)}
+                    </span>
+                    <span className="rounded-full text-base bg-red-50 px-2 text-red-500">
+                      {discountPercentage}%
+                    </span>
                   </div>
                 )}
               </div>
-            </TextContent>
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogContent className="max-w-3xl p-4">
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {images.map((item) => (
-                      <CarouselItem key={item}>
-                        <div className="flex items-center justify-center">
-                          <img
-                            src={item}
-                            className="w-full max-h-[70vh] object-contain rounded-lg"
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
-              </DialogContent>
-            </Dialog>
+              <p className="max-w-96 text-base leading-5 text-gray-600 line-clamp-2">
+                {description}
+              </p>
+            </div>
+            <div className=" space-y-4">
+              <span className=" text-gray-500 ">Select Color</span>
+              <div className=" flex gap-2">
+                {colors.map((item) => (
+                  <span
+                    key={item.color}
+                    onClick={() => setSelectedColor(item.color)}
+                    className={`w-8 h-8 rounded-full cursor-pointer flex justify-center items-center`}
+                    style={{ backgroundColor: item.color }}
+                  >
+                    {selectedColor === item.color && (
+                      <Check className="text-white" size={20} />
+                    )}
+                  </span>
+                ))}
+              </div>
+              <>
+                {cartItem ? (
+                  <div className="flex h-8 w-fit items-center gap-1 rounded-full border bg-gray-200 p-1">
+                    <button
+                      onClick={() => decreaseQuantity(cartItem.productId)}
+                      className="flex items-center justify-center rounded-full cursor-pointer"
+                    >
+                      <Minus size={14} />
+                    </button>
+
+                    <span className="min-w-7 text-center">
+                      {cartItem.quantity}
+                    </span>
+
+                    <button
+                      onClick={() => increaseQuantity(cartItem.productId)}
+                      className="flex items-center justify-center rounded-full cursor-pointer"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="rounded-full px-5"
+                    onClick={() =>
+                      addToCart({
+                        productId: id,
+                        name: name,
+                        image: image,
+                        price: priceAfter,
+                        quantity: 1,
+                        color: colorName!,
+                        discount: price,
+                      })
+                    }
+                  >
+                    Buy
+                  </Button>
+                )}
+              </>
+            </div>
           </div>
         </div>
-        <TitleContent title="Products" isRegister={true} />
-        {!products?.length && (
-          <div className="flex h-20 items-center justify-center">
-            No other items
+        <div className="">
+          <div className="">
+            <Tabs defaultValue="Reviews">
+              <TabsList variant="line">
+                <TabsTrigger value="Reviews">Rating & Reviews</TabsTrigger>
+                <TabsTrigger value="faqs">FAQs</TabsTrigger>
+              </TabsList>
+              <TabsContent value="Reviews">
+                <div className="flex justify-between">
+                  <TitleContent title="All Reviews" isRegister={true} />
+                  <WriteReview id={id} name={name} storeName={storeName} />
+                </div>
+                <ReadView id={id} name={name} storeName={storeName} />
+              </TabsContent>
+              <TabsContent value="faqs" className="w-full">
+                <Faqs />
+              </TabsContent>
+            </Tabs>
           </div>
-        )}
-        {products && (
-          <>
-            <div className="flex">
-              {products.map((item) => (
-                <OnlyCard
-                  key={item.id}
-                  type="products"
-                  id={item.id}
-                  name={item.name}
-                  image={item.image}
-                  price={item.price}
-                  onClick={() =>
-                    navigator({ to: `/stores/product/${item.id}` })
-                  }
-                />
-              ))}
-            </div>
-          </>
-        )}
+        </div>
+
+        <ProductsHome title="You might also like" product={data?.data ?? []} />
       </div>
-    </>
+    </div>
   );
 }

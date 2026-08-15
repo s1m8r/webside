@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
-import ChlidrenHome from "./children";
 import { useNavigate } from "@tanstack/react-router";
+import { Marquee } from "@/components/ui/marquee";
+import { useGetStores } from "@/API/stores";
+import ProductsHome from "./productsHome";
+import { useGetProducts } from "@/API/product";
+import TypesHome from "./types";
 
 const Home = () => {
   const navigation = useNavigate();
+  const { data } = useGetStores();
+  const { data: peoducts } = useGetProducts(4, "id");
+  const { data: peoductsTop } = useGetProducts(4, "rating");
   return (
     <>
-      <div className="h-screen bg-[url('/bg.jpg')] bg-cover bg-center bg-no-repeat flex justify-end items-center">
+      <div className="h-screen bg-[url('/bgrt.png')] bg-cover bg-center bg-no-repeat flex items-center rounded-full p-30">
         <div className="max-w-2xl space-y-6 mb-48">
           <div>
             <p className="text-4xl font-bold leading-tight md:text-6xl">
@@ -27,8 +34,29 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="my-16">
-        <ChlidrenHome />
+      <div>
+        <Marquee pauseOnHover className="bg-black h-24 p-8">
+          {data?.data.map((image) => (
+            <img
+              key={image.id}
+              src={image.image}
+              className=" object-cover rounded-lg overflow-hidden mx-12"
+            />
+          ))}
+        </Marquee>
+        <div className="p-24">
+          <ProductsHome
+            title="NEW ARRIVALS"
+            product={peoducts?.data ?? []}
+            goToShow={() => navigation({ to: "/stores/newarrivals" })}
+          />
+          <ProductsHome
+            title="top selling"
+            product={peoductsTop?.data ?? []}
+            goToShow={() => navigation({ to: "/stores/TopSell" })}
+          />
+          <TypesHome />
+        </div>
       </div>
     </>
   );

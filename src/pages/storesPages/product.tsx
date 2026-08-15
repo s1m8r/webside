@@ -13,7 +13,7 @@ const Product = () => {
           <Content
             images={data.images}
             storeId={data.storeId}
-            id={data.id}
+            id={data.id!}
             type="products"
             name={data.name}
             image={data.image}
@@ -21,6 +21,8 @@ const Product = () => {
             storeName={data.storeName}
             description={data.description}
             typeOfProduct={data.type}
+            rating={data.rating}
+            discountPercentage={data.discountPercentage}
           />
         )}
       </div>
