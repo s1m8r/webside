@@ -18,7 +18,9 @@ const TypesHome = () => {
               key={item.id}
               onClick={() => navigate({ to: `/stores/type/${item.id}` })}
               className={`relative h-60 overflow-hidden rounded-3xl cursor-pointer ${
-                small ? "col-span-5" : "col-span-7"
+                small
+                  ? "col-span-12 md:col-span-5"
+                  : "col-span-12 md:col-span-7"
               }`}
             >
               <h3 className="absolute top-4 left-4 z-10 text-2xl font-bold">

@@ -13,7 +13,6 @@ import { Route as protecedRouteRouteImport } from './routes/(proteced)/route'
 import { Route as protecedIndexRouteImport } from './routes/(proteced)/index'
 import { Route as loginRegisterRouteImport } from './routes/(login)/register'
 import { Route as loginLoginRouteImport } from './routes/(login)/login'
-import { Route as protecedStoresIndexRouteImport } from './routes/(proteced)/stores/index'
 import { Route as protecedProfileIndexRouteImport } from './routes/(proteced)/profile/index'
 import { Route as protecedOrdersIndexRouteImport } from './routes/(proteced)/orders/index'
 import { Route as protecedMycartIndexRouteImport } from './routes/(proteced)/mycart/index'
@@ -42,11 +41,6 @@ const loginLoginRoute = loginLoginRouteImport.update({
   id: '/(login)/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
-} as any)
-const protecedStoresIndexRoute = protecedStoresIndexRouteImport.update({
-  id: '/stores/',
-  path: '/stores/',
-  getParentRoute: () => protecedRouteRoute,
 } as any)
 const protecedProfileIndexRoute = protecedProfileIndexRouteImport.update({
   id: '/profile/',
@@ -106,7 +100,6 @@ export interface FileRoutesByFullPath {
   '/mycart/': typeof protecedMycartIndexRoute
   '/orders/': typeof protecedOrdersIndexRoute
   '/profile/': typeof protecedProfileIndexRoute
-  '/stores/': typeof protecedStoresIndexRoute
   '/stores/product/$id': typeof protecedStoresProductIdRoute
   '/stores/type/$id': typeof protecedStoresTypeIdRoute
 }
@@ -121,7 +114,6 @@ export interface FileRoutesByTo {
   '/mycart': typeof protecedMycartIndexRoute
   '/orders': typeof protecedOrdersIndexRoute
   '/profile': typeof protecedProfileIndexRoute
-  '/stores': typeof protecedStoresIndexRoute
   '/stores/product/$id': typeof protecedStoresProductIdRoute
   '/stores/type/$id': typeof protecedStoresTypeIdRoute
 }
@@ -138,7 +130,6 @@ export interface FileRoutesById {
   '/(proteced)/mycart/': typeof protecedMycartIndexRoute
   '/(proteced)/orders/': typeof protecedOrdersIndexRoute
   '/(proteced)/profile/': typeof protecedProfileIndexRoute
-  '/(proteced)/stores/': typeof protecedStoresIndexRoute
   '/(proteced)/stores/product/$id': typeof protecedStoresProductIdRoute
   '/(proteced)/stores/type/$id': typeof protecedStoresTypeIdRoute
 }
@@ -155,7 +146,6 @@ export interface FileRouteTypes {
     | '/mycart/'
     | '/orders/'
     | '/profile/'
-    | '/stores/'
     | '/stores/product/$id'
     | '/stores/type/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -170,7 +160,6 @@ export interface FileRouteTypes {
     | '/mycart'
     | '/orders'
     | '/profile'
-    | '/stores'
     | '/stores/product/$id'
     | '/stores/type/$id'
   id:
@@ -186,7 +175,6 @@ export interface FileRouteTypes {
     | '/(proteced)/mycart/'
     | '/(proteced)/orders/'
     | '/(proteced)/profile/'
-    | '/(proteced)/stores/'
     | '/(proteced)/stores/product/$id'
     | '/(proteced)/stores/type/$id'
   fileRoutesById: FileRoutesById
@@ -226,13 +214,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof loginLoginRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/(proteced)/stores/': {
-      id: '/(proteced)/stores/'
-      path: '/stores'
-      fullPath: '/stores/'
-      preLoaderRoute: typeof protecedStoresIndexRouteImport
-      parentRoute: typeof protecedRouteRoute
     }
     '/(proteced)/profile/': {
       id: '/(proteced)/profile/'
@@ -309,7 +290,6 @@ interface protecedRouteRouteChildren {
   protecedMycartIndexRoute: typeof protecedMycartIndexRoute
   protecedOrdersIndexRoute: typeof protecedOrdersIndexRoute
   protecedProfileIndexRoute: typeof protecedProfileIndexRoute
-  protecedStoresIndexRoute: typeof protecedStoresIndexRoute
   protecedStoresProductIdRoute: typeof protecedStoresProductIdRoute
   protecedStoresTypeIdRoute: typeof protecedStoresTypeIdRoute
 }
@@ -323,7 +303,6 @@ const protecedRouteRouteChildren: protecedRouteRouteChildren = {
   protecedMycartIndexRoute: protecedMycartIndexRoute,
   protecedOrdersIndexRoute: protecedOrdersIndexRoute,
   protecedProfileIndexRoute: protecedProfileIndexRoute,
-  protecedStoresIndexRoute: protecedStoresIndexRoute,
   protecedStoresProductIdRoute: protecedStoresProductIdRoute,
   protecedStoresTypeIdRoute: protecedStoresTypeIdRoute,
 }

@@ -28,7 +28,6 @@ export default function ShowProduct({
   const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
   const { data: colors } = useGetColors();
-  // const color = colors?.data.find((i) => i.color === selectcolor[0])?.path;
   const nameColor = colors?.data.find((i) => i.color === color)?.path;
   const {
     items: cartItems,
@@ -37,7 +36,7 @@ export default function ShowProduct({
   } = useCartStore();
   const cartItem = cartItems.find((item) => item.productId === id);
   return (
-    <div className="overflow-hidden rounded-xl bg-white w-64">
+    <div className="overflow-hidden rounded-xl bg-white">
       <div className="relative">
         <img
           onClick={() => navigate({ to: `/stores/product/${id}` })}

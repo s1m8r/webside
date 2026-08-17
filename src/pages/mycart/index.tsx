@@ -3,12 +3,14 @@ import TitleContent from "@/components/layout/title";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
 import { useAuthStore } from "@/stores/userStore";
+import { useNavigate } from "@tanstack/react-router";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 const MyCart = () => {
   const { mutate } = useCart();
   const user = useAuthStore.getState().user;
   const goCart = () => {
+    if (totalPrice() === 0) return null;
     const array = items.map((item) => ({
       color: item.color,
       productId: item.productId,
@@ -39,12 +41,14 @@ const MyCart = () => {
     removeItem,
     totalPrice,
     clearCart,
+    Subtotal,
   } = useCartStore();
+  const navigator = useNavigate();
   return (
     <div className="px-12">
       <TitleContent title="My Cart" />
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-8">
+        <div className="col-span-12 md:col-span-8 px-2 py-4">
           <div>
             {items.length !== 0 && (
               <div className="space-y-3 max-h-[calc(80vh-80px)] overflow-y-auto">
@@ -63,11 +67,17 @@ const MyCart = () => {
                       <div>
                         <h3 className="font-medium">{item.name}</h3>
                         <p className="text-sm text-gray-500">
-                          Price: {item.price.toFixed(2)}$
+                          Pricex: {item.discount.toFixed(2)}$
                         </p>
-                        <p className="text-sm text-gray-500">{item.color}</p>
-                        <p className="text-sm text-red-500">
-                          -{(item.discount - item.price).toFixed(2)}$
+                        <p className="text-sm text-gray-500">
+                          Color:{item.color}
+                        </p>
+
+                        <p className="text-sm text-gray-500">
+                          <span> Discount:</span>
+                          <span className="text-sm text-red-500">
+                            -{(item.discount - item.price).toFixed(2)}$
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -95,29 +105,56 @@ const MyCart = () => {
                     </div>
                   </div>
                 ))}
-                <div className="sticky bottom-0 z-10 bg-white">
-                  <div className="flex justify-between border-t pt-3 font-semibold text-lg">
-                    <span>Total</span>
-                    <span>${totalPrice()}</span>
-                  </div>
-                  <div className="flex justify-end">
-                    <Button onClick={goCart}>Buy</Button>
-                  </div>
-                </div>
               </div>
             )}
             {items.length === 0 && (
               <>
-                <div className="flex items-center justify-center text-gray-500">
-                  Your cart is empty.
+                <div className="flex flex-col items-center justify-center text-gray-500 ">
+                  <span className="mb-8">Your cart is empty.</span>
+                  <Button onClick={() => navigator({ to: "/" })}>
+                    Go to Home
+                  </Button>
                 </div>
-                {/* <Button onClick={() => setIsOpen(false)}>close</Button> */}
               </>
             )}
           </div>
         </div>
 
-        <div className="col-span-4">Last div</div>
+        <div className="col-span-12 md:col-span-4 px-2 py-4 border-2 border-gray-300 h-fit rounded-[20px]">
+          <h1>Order Summary</h1>
+          <div className=" space-y-1 border-b-2 border-gray-300 py-2 pb-4">
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-500">Subtotal</span>
+
+              <span className="text-sm font-bold">
+                ${totalPrice().toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-500">Discount</span>
+              <span className="text-sm text-red-500 font-bold">
+                ${(Subtotal() - totalPrice()).toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between mt-2">
+              <span className="text-sm font-bold">Total</span>
+              <span className="text-sm font-bold">
+                ${(totalPrice() - (totalPrice() - Subtotal())).toFixed(2)}
+              </span>
+            </div>
+            <div>
+              <Button
+                onClick={goCart}
+                className="w-full"
+                disabled={totalPrice() === 0}
+              >
+                Buy
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

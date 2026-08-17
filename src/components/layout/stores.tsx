@@ -1,105 +1,56 @@
-import { useGetColors } from "@/API/colors";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Check, Filter } from "lucide-react";
-import { useState } from "react";
+import { Filter } from "lucide-react";
 import TitleContent from "./title";
 import ShowProduct from "./showproduct";
 import { ProdectScema } from "@/schemas/product";
 import z from "zod";
+import AccordionStore from "./accordionStore";
+import { useState } from "react";
 interface Props {
   title: string;
   products: z.infer<typeof ProdectScema>[];
   setColor: React.Dispatch<React.SetStateAction<string>>;
 }
 export default function StoreUi({ title, products, setColor }: Props) {
-  const [selectedColor, setSelectedColor] = useState("");
-  const checkColor = (color: string) => {
-    const newColor = selectedColor === color ? "" : color;
-    setSelectedColor(newColor);
-    setColor(newColor);
-  };
-  const { data: colors } = useGetColors();
-
+  const [open, setOpen] = useState(false);
   return (
-    <div className="px-12 flex">
-      <div className="sticky top-16 self-start border-2 px-4 py-6 mb-2 rounded-[20px] w-fit h-fit">
+    <div className="px-12 grid grid-cols-12 ">
+      <div className="hidden sticky col-span-2 top-16 self-start border-2 px-4 py-6 mb-2 rounded-[20px] h-fit md:block">
         <div className="flex justify-between items-center">
           <span className=" font-bold">Filters</span>
           <span>
             <Filter size={16} />
           </span>
         </div>
-        <Accordion type="multiple" className="w-3xs">
-          <AccordionItem value="T-shirts">
-            <AccordionTrigger>T-shirts</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Shorts">
-            <AccordionTrigger>Shorts</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Shirts">
-            <AccordionTrigger>Shirts</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Shirts">
-            <AccordionTrigger>Shirts</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Hoodie">
-            <AccordionTrigger>Hoodie</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Jeans">
-            <AccordionTrigger>Jeans</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Price">
-            <AccordionTrigger>Price</AccordionTrigger>
-          </AccordionItem>
-          <AccordionItem value="Colors">
-            <AccordionTrigger>Colors</AccordionTrigger>
-            <AccordionContent>
-              <div className="grid grid-cols-6 gap-2">
-                {colors?.data.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => checkColor(item.color)}
-                    style={{ backgroundColor: item.color }}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border-2 ${
-                      selectedColor === item.color
-                        ? "border-black"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {selectedColor === item.color && (
-                      <span className="text-sm font-bold text-white">
-                        <Check />
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <AccordionStore setColor={setColor} />
       </div>
-      <div>
-        <div>
+      <div className=" col-span-12 md:col-span-10">
+        <div className="flex justify-between">
           <TitleContent title={title ?? ""} isRegister={true} />
+          <div onClick={() => setOpen(!open)} className="block md:hidden">
+            <Filter size={20} />
+          </div>
         </div>
-        <div className=" grid grid-cols-4 gap-4 px-8">
+        <div className="block md:hidden">
+          {open && (
+            <>
+              <AccordionStore setColor={setColor} />
+            </>
+          )}
+        </div>
+        <div className="grid grid-cols-12 gap-4 px-8">
           {products?.map((item) => (
-            <ShowProduct
-              key={item.id}
-              id={item.id!}
-              img={item.image}
-              name={item.name}
-              rating={item.rating}
-              price={item.price}
-              color={item.images[0].color}
-              discountPercentage={item.discountPercentage}
-            />
+            <div className="col-span-12 sm:col-span-12 md:col-span-6 lg:col-span-3">
+              <ShowProduct
+                key={item.id}
+                id={item.id!}
+                img={item.image}
+                name={item.name}
+                rating={item.rating}
+                price={item.price}
+                color={item.images[0].color}
+                discountPercentage={item.discountPercentage}
+              />
+            </div>
           ))}
         </div>
       </div>

@@ -8,7 +8,7 @@ const NewArrivals = () => {
   const [color, setColor] = useState("");
   console.log(color);
   return (
-    <>
+    <div className="py-4">
       <StoreUi
         title={"New Arrivals"}
         products={products?.data ?? []}
@@ -22,7 +22,7 @@ const NewArrivals = () => {
         page={page}
         setPage={setPage}
       />
-    </>
+    </div>
   );
 };
 

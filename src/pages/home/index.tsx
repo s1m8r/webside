@@ -13,9 +13,9 @@ const Home = () => {
   const { data: peoductsTop } = useGetProducts(4, "rating");
   return (
     <>
-      <div className="h-screen bg-[url('/bgrt.png')] bg-cover bg-center bg-no-repeat flex items-center rounded-full p-30">
-        <div className="max-w-2xl space-y-6 mb-48">
-          <div>
+      <div className="h-screen md:h-fit bg-[url('/bgMobile.png')] bg-cover bg-center bg-no-repeat flex items-center p-2 md:p-30 md:bg-[url('/bgrt.png')] md:rounded-full ">
+        <div className="max-w-2xl space-y-6 w-full flex justify-center">
+          <div className="flex flex-col p-4 h-fit">
             <p className="text-4xl font-bold leading-tight md:text-6xl">
               Welcome to <span className="text-orange-500">Samer Store</span>
             </p>
@@ -26,7 +26,7 @@ const Home = () => {
             </p>
 
             <Button
-              className="rounded-full px-8 py-6 text-base font-semibold"
+              className="rounded-full px-8 py-6 text-base font-semibold w-full md:w-fit"
               onClick={() => navigation({ to: "/stores" })}
             >
               Go to Store

@@ -11,7 +11,10 @@ export default function ReadView({ id, name, storeName }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
       {myReviews?.data.map((item) => (
-        <div className="border-2 flex p-4 rounded-[12px] gap-4" key={item.id}>
+        <div
+          className="border-2 flex p-4 rounded-[12px] gap-4 col-span-2 md:col-span-1"
+          key={item.id}
+        >
           <div className="flex flex-col justify-between">
             <div key={item.id} className="">
               <div>

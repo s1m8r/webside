@@ -8,7 +8,7 @@ const TopSell = () => {
   const [color, setColor] = useState("");
   console.log(color);
   return (
-    <>
+    <div className="py-4">
       <StoreUi
         title={"TOP SELLING"}
         products={products?.data ?? []}
@@ -22,7 +22,7 @@ const TopSell = () => {
         page={page}
         setPage={setPage}
       />
-    </>
+    </div>
   );
 };
 
