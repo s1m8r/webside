@@ -44,7 +44,7 @@ const Home = () => {
             />
           ))}
         </Marquee>
-        <div className="p-24">
+        <div className="p-4 md:p-24">
           <ProductsHome
             title="NEW ARRIVALS"
             product={peoducts?.data ?? []}

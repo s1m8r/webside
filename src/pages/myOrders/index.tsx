@@ -23,7 +23,7 @@ const MyOrders = () => {
   const total = subtotal;
 
   return (
-    <div className="px-12">
+    <div className="px-4 md:px-12">
       <TitleContent title="My Orders" />
 
       {orders.length === 0 ? (
