@@ -2,11 +2,18 @@ import TitleContent from "./title";
 
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Zoom, Thumbs } from "swiper/modules";
+import {
+  Navigation,
+  Pagination,
+  Zoom,
+  Thumbs,
+  Scrollbar,
+} from "swiper/modules";
 import { Swiper as SwiperType } from "swiper";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css";
+import "swiper/css/scrollbar";
 import Rating from "./rading";
 import { Check, Minus, Plus } from "lucide-react";
 import { Button } from "../ui/button";
@@ -75,30 +82,34 @@ export default function Content({
         <TitleContent title={name} />
         <div className="flex gap-4 mb-4 flex-col md:flex-row">
           <div className="flex flex-col-reverse gap-1.5 md:flex-row">
-            <div className="flex">
+            <div className="w-full max-w-full overflow-hidden md:w-24">
               <Swiper
-                modules={[Thumbs]}
+                modules={[Thumbs, Scrollbar]}
                 onSwiper={setThumbsSwiper}
-                slidesPerView={4}
+                scrollbar={{
+                  draggable: true,
+                }}
+                slidesPerView="auto"
                 spaceBetween={10}
                 watchSlidesProgress
+                direction="horizontal"
                 breakpoints={{
                   768: {
                     direction: "vertical",
+                    slidesPerView: 4,
                   },
                 }}
-                direction="horizontal"
-                className="flex"
+                className=""
               >
                 <SwiperSlide
                   onClick={() => setActiveThumb(0)}
-                  className={`!flex !h-24 !w-24 !items-center !justify-center cursor-pointer
-                ${activeThumb === 0 ? "border-amber-700 border-2" : ""}`}
+                  className={`!flex !h-24 !w-24 !shrink-0 !items-center !justify-center cursor-pointer
+      ${activeThumb === 0 ? "border-2 border-amber-700" : ""}`}
                 >
                   <img
                     src={image}
                     alt=""
-                    className={`h-full w-full object-cover ${activeThumb === 0 ? "" : "rounded-[8px]"}`}
+                    className="h-full w-full rounded-[8px] object-cover"
                   />
                 </SwiperSlide>
 
@@ -106,14 +117,13 @@ export default function Content({
                   <SwiperSlide
                     key={item.path}
                     onClick={() => setActiveThumb(i + 1)}
-                    className={`!flex !h-24 !w-24 !items-center !justify-center cursor-pointer
-                  ${activeThumb === i + 1 ? "border-amber-700 border-2" : ""}
-                  `}
+                    className={`!flex !h-24 !w-24 !shrink-0 !items-center !justify-center cursor-pointer
+        ${activeThumb === i + 1 ? "border-2 border-amber-700" : ""}`}
                   >
                     <img
                       src={item.path}
                       alt=""
-                      className={`h-full w-full object-cover ${activeThumb === i + 1 ? "" : "rounded-[8px]"}`}
+                      className="h-full w-full rounded-[8px] object-cover"
                     />
                   </SwiperSlide>
                 ))}

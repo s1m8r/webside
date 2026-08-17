@@ -67,7 +67,7 @@ const MyCart = () => {
                       <div>
                         <h3 className="font-medium">{item.name}</h3>
                         <p className="text-sm text-gray-500">
-                          Pricex: {item.discount.toFixed(2)}$
+                          Price: {item.discount.toFixed(2)}$
                         </p>
                         <p className="text-sm text-gray-500">
                           Color:{item.color}

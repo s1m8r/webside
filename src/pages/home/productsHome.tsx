@@ -23,7 +23,7 @@ export default function ProductsHome({ title, product, goToShow }: Props) {
           <p className="text-muted-foreground">No products found.</p>
         </div>
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-8 w-full px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {product.map((item) => (
             <ShowProduct
               key={item.id}

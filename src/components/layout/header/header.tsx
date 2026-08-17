@@ -60,8 +60,8 @@ const Header = () => {
   };
 
   return (
-    <div className="fixed left-0 top-0 z-50 w-full border-b border-gray-200 bg-white/80 px-4 backdrop-blur-md md:px-12">
-      <div className="mx-auto hidden h-16 items-center gap-6 px-6 md:flex">
+    <div className="fixed left-0 top-0 z-50 w-full border-b border-gray-200 bg-white/80 px-2 backdrop-blur-md md:px-12">
+      <div className="mx-auto hidden h-16 items-center gap-6 px-4 md:flex">
         <Link to="/" className="flex shrink-0 items-center gap-2">
           <img
             src="/logo.png"
