@@ -2,6 +2,7 @@ import { useRegister } from "@/API/user";
 import RegisterForm from "@/components/layout/form/register";
 import { registerSchema } from "@/schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 type registerFormData = z.infer<typeof registerSchema>;
@@ -15,6 +16,7 @@ const Register = () => {
   } = useForm({
     resolver: zodResolver(registerSchema),
   });
+  const navigate = useNavigate();
   const handleRegister = (data: registerFormData) => {
     const dataFormat = {
       ...data,
@@ -31,7 +33,13 @@ const Register = () => {
       roleId: 3,
       isActive: true,
     };
-    mutate(dataFormat);
+    mutate(dataFormat, {
+      onSuccess: () => {
+        navigate({
+          to: "/login",
+        });
+      },
+    });
   };
   return (
     <div>
