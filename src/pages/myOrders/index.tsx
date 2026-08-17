@@ -51,7 +51,7 @@ const MyOrders = () => {
                     <div className="flex items-center justify-between border-b border-gray-300 pb-3">
                       <div>
                         <h2 className="font-semibold">
-                          Order {(data.pagination.totalItems ?? 0) - index}
+                          Order {(data?.pagination.totalItems ?? 0) - index}
                         </h2>
 
                         <p className="text-sm text-gray-400">
